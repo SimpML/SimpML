@@ -10,7 +10,6 @@ from .hyperparameters_optimizer import *
 from .inference import *
 from .interpreter import *
 from .model import *
-from .monitoring import *
 from .pipeline import *
 from .shap_manager import *
 from .splitter_pool import *

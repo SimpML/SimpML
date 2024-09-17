@@ -26,12 +26,6 @@ from simpml.tabular.splitter_pool import DateTimeSplitter, GroupSplitter, Random
 from simpml.tabular.tabular_data_manager import CrossValidationSupervisedTabularDataManager
 from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager
 
-ROOT_PATH: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if ROOT_PATH not in sys.path:
-    sys.path.append(ROOT_PATH)
-
-TEST_DATA_DIR: str = os.path.join(ROOT_PATH, "tests", "data")
-
 metrics_for_BinaryClassification = [
     'Accuracy',
     'AUC',

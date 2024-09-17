@@ -18,7 +18,7 @@ if ROOT_PATH not in sys.path:
     sys.path.append(ROOT_PATH)
 
 from simpml.core.base import Dataset, PredictionType
-from simpml.core.dataset import DataSet
+from simpml.core.data_set import DataSet
 from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager
 
 def get_dataset() -> Dict[Dataset, Tuple[pd.DataFrame, Optional[pd.Series]]]:

@@ -131,7 +131,7 @@ class RemoveSpecialJSONCharacters(BaseSelector):
 class SafeDropFeatures(DropFeatures):
     """Drop specified features (safe version)."""
 
-    def __init__(self, features_to_drop: Sequence[Union[str, int]]) -> None:
+    def __init__(self, features_to_drop: List[Union[str, int]]) -> None:
         """Initializes the SafeDropFeatures class.
 
         Args:
@@ -165,7 +165,7 @@ class SafeDropFeatures(DropFeatures):
                 "existing variables"
             )
 
-        self._get_feature_names_in(X)
+        self._get_feature_names_in(X)  # type: ignore[no-untyped-call]
 
         return self
 
@@ -592,7 +592,7 @@ class NanColumnDropper(BaseEstimator, TransformerMixin):
         return X
 
 
-class DictLabelEncoder(BaseSelector):
+class DictLabelEncoder(BaseEstimator, TransformerMixin):
     """Label encoder with configurable encoding values.
 
     This class allows you to convert categorical variables into a format
@@ -696,7 +696,7 @@ class DictLabelEncoder(BaseSelector):
         ]
 
 
-class UniqueIDLabelEncoder(BaseSelector):
+class UniqueIDLabelEncoder(BaseEstimator, TransformerMixin):
     """Encoder that keeps a single y value for each unique ID.
 
     This class is useful in time series scenarios where each unit (ID) has multiple y values,

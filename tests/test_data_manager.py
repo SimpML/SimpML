@@ -8,6 +8,7 @@ from imblearn.over_sampling import SMOTE, SMOTEN, SMOTENC
 from imblearn.under_sampling import ClusterCentroids
 
 from simpml.core.base import Dataset, PredictionType
+from simpml.core.data_set import DataSet
 from simpml.tabular.adapters_pool import ManipulateAdapter
 from simpml.tabular.splitter_pool import RandomSplitter
 from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager

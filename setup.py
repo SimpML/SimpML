@@ -1,5 +1,4 @@
-"""Setup module for SimpML.
-"""
+"""Setup module for SimpML."""
 
 import os
 from typing import List  # Typing import should come before third-party imports

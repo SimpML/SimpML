@@ -3,6 +3,13 @@
 from __future__ import annotations
 import matplotlib.pyplot as plt
 
+import os
+import sys
+
+ROOT_PATH: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_PATH not in sys.path:
+    sys.path.append(ROOT_PATH)
+
 from simpml.core.base import MetricName, PredictionType
 from simpml.core.data_set import DataSet
 from simpml.core.experiment_manager import ExperimentManager

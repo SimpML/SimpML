@@ -1,19 +1,27 @@
 import os
 from setuptools import setup, find_packages
+from typing import List
 
 # Helper function to read requirements from a file
-def parse_requirements(filename):
+def parse_requirements(filename: str) -> List[str]:
     with open(os.path.join(os.path.dirname(__file__), filename), 'r') as file:
-        return [line.strip() for line in file if line.strip() and not line.startswith('#')]
+        return [
+            line.strip()
+            for line in file
+            if line.strip() and not line.startswith('#')
+        ]
 
 # Read main dependencies and dev dependencies
-install_requires = parse_requirements('requirements.txt')
-dev_requires = parse_requirements('dev-requirements.txt')
+install_requires: List[str] = parse_requirements('requirements.txt')
+dev_requires: List[str] = parse_requirements('dev-requirements.txt')
 
 setup(
     name="simpml",
     version="0.1",
-    description="SimpML is an open-source, no/low-code machine learning library in Python that simplifies and automates machine learning workflows.",
+    description=(
+        "SimpML is an open-source, no/low-code machine learning library in "
+        "Python that simplifies and automates machine learning workflows."
+    ),
     author="Miriam Horovicz, Roni Goldschmidt",
     author_email="miryam.hor@gmail.com, ronigoldsmid@gmail.com",
     packages=find_packages(include=["simpml", "simpml.*"]),

@@ -24,9 +24,8 @@ import simpml
 # -- Project information -----------------------------------------------------
 
 project = "SimpML"
-copyright = "2023, NI Corp."
-author = "NI Corp."
-# TODO: Get the version from within the `optimalai` package
+copyright = "2023, SimpML under the MIT License"
+author = "Miriam Horovicz, Roni Goldschmidt"
 version = "0.1"
 release = version
 language = "en"

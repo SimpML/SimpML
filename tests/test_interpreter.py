@@ -10,17 +10,15 @@ if ROOT_PATH not in sys.path:
     sys.path.append(ROOT_PATH)
 
 from simpml.core.base import MetricName, PredictionType
+from simpml.core.data_set import DataSet
 from simpml.core.experiment_manager import ExperimentManager
 from simpml.tabular.interpreter import TabularInterpreterClassification
 from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager
 
-TEST_DATA_DIR: str = os.path.join(ROOT_PATH, "tests", "data")
-
-
 def test_noisy_features() -> None:
     """Test getting noisy features."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        Datset.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -39,7 +37,7 @@ def test_noisy_features() -> None:
 def test_no_shap() -> None:
     """Test getting noisy features."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        Datset.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )

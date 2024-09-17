@@ -33,6 +33,7 @@ per-file-ignores =
     simpml/tabular/all.py:F401,F403
     simpml/vision/all.py:F401,F403
     tests/*:E,F,W,C,N,D,I
+    docs/*:E,F,W,C,N,D,I
 
 # Config for flake8-docstrings
 docstring-convention = google

@@ -643,7 +643,7 @@ class CVTrainer(TrainerBase):
         if num_folds % 2:
             axes[-1].axis("off")
 
-        plt.tight_layout(rect=[0, 0.03, 1, 0.97])
+        plt.tight_layout(rect=(0, 0.03, 1, 0.97))
         return fig
 
     def display_model_cross_metrics(self, model_name: str) -> plt.Figure:
@@ -686,6 +686,6 @@ class CVTrainer(TrainerBase):
             # Add metric values on top of bars with 2 digits after the dot
             for i, v in enumerate(metric_values):
                 ax.text(i, v, f'{v:.2f}', ha='center', va='bottom')
-        plt.tight_layout(rect=[0, 0.03, 1, 0.97])
+        plt.tight_layout(rect=(0, 0.03, 1, 0.97))
         plt.show()
         return fig

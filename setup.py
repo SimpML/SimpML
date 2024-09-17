@@ -1,9 +1,19 @@
 import os
-from setuptools import setup, find_packages
-from typing import List
+from typing import List  # Typing import should come before third-party imports
+
+from setuptools import setup, find_packages  # Third-party imports
 
 # Helper function to read requirements from a file
 def parse_requirements(filename: str) -> List[str]:
+    """
+    Parse a requirements file into a list of dependencies.
+
+    Args:
+        filename (str): The path to the requirements file.
+
+    Returns:
+        List[str]: A list of dependencies.
+    """
     with open(os.path.join(os.path.dirname(__file__), filename), 'r') as file:
         return [
             line.strip()

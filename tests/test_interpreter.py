@@ -18,7 +18,7 @@ from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager
 def test_noisy_features() -> None:
     """Test getting noisy features."""
     data_manager = SupervisedTabularDataManager(
-        Dataset.load_titanic_dataset(),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -37,7 +37,7 @@ def test_noisy_features() -> None:
 def test_no_shap() -> None:
     """Test getting noisy features."""
     data_manager = SupervisedTabularDataManager(
-        Dataset.load_titanic_dataset(),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )

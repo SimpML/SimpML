@@ -132,6 +132,7 @@ def count_and_plot_images(root_dir: str, classes: Optional[list] = None) -> plt.
     """Count images in given directories and plot a bar graph."""
     if classes is None:
         classes = ["Pass", "Fail"]
+
     # Initialize a dictionary to hold counts
     counts = {}
     # Loop through the classes
@@ -156,7 +157,8 @@ def count_and_plot_images(root_dir: str, classes: Optional[list] = None) -> plt.
 
     # Text on the top of each bar
     for i in range(len(counts)):
-        plt.text(x=i - 0.1, y=list(counts.values())[i] + 1, s=list(counts.values())[i], size=10)
+        count_value = list(counts.values())[i]
+        plt.text(x=i - 0.1, y=count_value + 1, s=str(count_value), size=10)
 
     plt.show()
     return fig

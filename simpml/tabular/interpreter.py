@@ -44,7 +44,6 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.tree import export_text
-from ydata_profiling import ProfileReport
 
 # Conditional imports
 try:
@@ -881,36 +880,6 @@ class TabularInterpreterBase:
                     break
 
         return final_drop_list
-
-    @default_data_fill
-    def pandas_profiler_feature_importances(
-        self,
-        X: Optional[pd.DataFrame] = None,
-        y: Optional[pd.Series] = None,
-        keep_imp: float = 0.99,
-    ) -> ProfileReport:
-        """Run a profiler on the top features according to SHAP.
-
-        Things to look at:
-            - **Warnings section** - Diverse set of warnings regarding abnormalities in our data.
-            - **Correlation section** - All kinds of correlations are comfortably calculated.
-              between all variables. See additional explanation on correlations in the next section.
-            - **Missing values section** - The interesting part here is viewing combination of
-              missing values, i.e. feature_i and feature_j are frequently missed together. The
-              dendrogram is a nice view for it.
-        """
-        assert X is not None
-
-        feature_importance, drop_list = self.keep_impacting_feature_importance(
-            keep_imp=0.99, X=X, y=y
-        )
-        df = X
-
-        most_imp_profile = ProfileReport(
-            df[feature_importance.loc[~feature_importance["col_name"].isin(drop_list)]["col_name"]],
-            title="profiling report",
-        )
-        return most_imp_profile
 
 
 class TabularInterpreterClassification(TabularInterpreterBase):

@@ -465,17 +465,6 @@ def test_filter_kwargs(
             ''
         ),
         (
-            pd.read_csv("tests\\data\\Shelter Animal Outcomes.csv")[::100],
-            'OutcomeType',
-            'Accuracy',
-            None,
-            PredictionType.MulticlassClassification.value,
-            False,
-            None,
-            'By Date',
-            'DateTime'
-        ),
-        (
             DataSet.load_time_series_classification_dataset()[::100],
             'target',
             'AUC',

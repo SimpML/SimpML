@@ -444,7 +444,7 @@ class GroupSplitter(SplitterBase):
         sorted_groups = group_sizes.sort_values(ascending=False).index
 
         data_sets: Dict[Dataset, List[Any]] = {set_name: [] for set_name in self.split_sets}
-        self.allocated_sizes: Dict[Dataset, float] = {set_name: 0 for set_name in self.split_sets}
+        self.allocated_sizes: Dict[Dataset, float] = dict.fromkeys(self.split_sets, 0)
         self.group_allocation: Dict[Dataset, List] = {set_name: [] for set_name in self.split_sets}
 
         # Allocate one group to each subset based on size

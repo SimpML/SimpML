@@ -3,6 +3,13 @@
 from __future__ import annotations
 import pytest
 
+import os
+import sys
+
+ROOT_PATH: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_PATH not in sys.path:
+    sys.path.append(ROOT_PATH)
+
 from simpml.core.base import (
     Dataset,
     DataType,

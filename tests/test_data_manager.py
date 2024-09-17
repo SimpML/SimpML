@@ -1,31 +1,21 @@
 """Model data helper tests."""
 
 from __future__ import annotations
-
-import os
-import sys
 from typing import List
 
 import numpy as np
 from imblearn.over_sampling import SMOTE, SMOTEN, SMOTENC
 from imblearn.under_sampling import ClusterCentroids
 
-ROOT_PATH: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if ROOT_PATH not in sys.path:
-    sys.path.append(ROOT_PATH)
-
 from simpml.core.base import Dataset, PredictionType
 from simpml.tabular.adapters_pool import ManipulateAdapter
 from simpml.tabular.splitter_pool import RandomSplitter
 from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager
 
-TEST_DATA_DIR: str = os.path.join(ROOT_PATH, "tests", "data")
-
-
 def test_get_data() -> None:
     """Test getting data."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -38,13 +28,13 @@ def test_get_data() -> None:
 def test_random_state_same() -> None:
     """Test when the random state is the same between data managers."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
 
     data_manager_2 = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -59,14 +49,14 @@ def test_random_state_different() -> None:
     """Test when the random state is different between data managers."""
     splitter = RandomSplitter(target="Survived", random_state=5)
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         splitter=splitter,
         prediction_type=PredictionType.BinaryClassification,
     )
 
     data_manager_2 = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -80,7 +70,7 @@ def test_random_state_different() -> None:
 def test_description() -> None:
     """Test the description functionality."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -93,7 +83,7 @@ def test_clone() -> None:
     """Test the clone functionality."""
     splitter = RandomSplitter(target="Survived", random_state=5)
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         splitter=splitter,
         prediction_type=PredictionType.BinaryClassification,
@@ -105,7 +95,7 @@ def test_clone() -> None:
 def test_undersampling_balance_method() -> None:
     """Test the undersampling balance method."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -116,7 +106,7 @@ def test_undersampling_balance_method() -> None:
     original_size = X_train.shape[0]
 
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -138,7 +128,7 @@ def test_undersampling_balance_method() -> None:
 def test_oversampling_balance_method_smote() -> None:
     """Test data set that has only numerical features."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -149,7 +139,7 @@ def test_oversampling_balance_method_smote() -> None:
     original_size = X_train.shape[0]
 
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -171,7 +161,7 @@ def test_oversampling_balance_method_smote() -> None:
 def test_oversampling_balance_method_smotenc() -> None:
     """Test data set that has both categorical and numerical features."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -196,7 +186,7 @@ def test_oversampling_balance_method_smotenc() -> None:
     cat_cols_indices_arr = np.array(cat_cols_indices, dtype=int)
 
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -218,7 +208,7 @@ def test_oversampling_balance_method_smotenc() -> None:
 def test_oversampling_balance_method_smoten() -> None:
     """Test data set that has only categorical features."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )
@@ -229,7 +219,7 @@ def test_oversampling_balance_method_smoten() -> None:
     original_size = X_train.shape[0]
 
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )

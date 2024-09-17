@@ -30,7 +30,7 @@ dev_requires: List[str] = parse_requirements('dev-requirements.txt')
 
 setup(
     name="simpml",
-    version="0.1",
+    version="0.0.1",
     description=(
         "SimpML is an open-source, no/low-code machine learning library in "
         "Python that simplifies and automates machine learning workflows."

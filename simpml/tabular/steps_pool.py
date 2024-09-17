@@ -58,7 +58,7 @@ class SmartImpute(_BaseImputer):
         Returns:
             The fitted SmartImpute instance.
         """
-        imputed_values = {col: None for col in X.columns}
+        imputed_values = dict.fromkeys(X.columns, None)
 
         for col in X.columns:
             dtype = X[col].dtype.name

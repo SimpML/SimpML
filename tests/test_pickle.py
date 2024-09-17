@@ -18,15 +18,13 @@ if ROOT_PATH not in sys.path:
     sys.path.append(ROOT_PATH)
 
 from simpml.core.base import Dataset, PredictionType
+from simpml.core.dataset import DataSet
 from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager
-
-TEST_DATA_DIR: str = os.path.join(ROOT_PATH, "tests", "data")
-
 
 def get_dataset() -> Dict[Dataset, Tuple[pd.DataFrame, Optional[pd.Series]]]:
     """Get a data set."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )

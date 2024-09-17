@@ -710,7 +710,7 @@ class PipelineBuilder:
             sklearn_pipeline_steps.append(
                 (
                     "SafeDropFeaturesBefore",
-                    SafeDropFeatures(features_to_drop=drop_cols),
+                    SafeDropFeatures(features_to_drop=list(drop_cols)),
                 )
             )
         if waveforms_feature_extractor:
@@ -728,7 +728,7 @@ class PipelineBuilder:
             sklearn_pipeline_steps.append(
                 (
                     "SafeInernalDropFeaturesBefore",
-                    SafeDropFeatures(features_to_drop=inernal_drop_cols),
+                    SafeDropFeatures(features_to_drop=list(inernal_drop_cols)),
                 )
             )
         if nan_column_dropper:
@@ -918,7 +918,8 @@ class PipelineBuilder:
                 params_dict[param] = param in self.pipeline_dict_params[prediction_type_str] and val
         if cols_to_drop:
             params_dict["inernal_drop_cols"] = cols_to_drop
-        return partial(self.get_pipeline, target=target, **params_dict)
+        target_value = target if target is not None else ""
+        return partial(self.get_pipeline, target=target_value, **params_dict)
 
 
 def pipeline_decorator(manager_instance: DataManagerBase) -> Callable[[Callable], Callable]:

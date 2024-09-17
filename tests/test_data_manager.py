@@ -7,6 +7,13 @@ import numpy as np
 from imblearn.over_sampling import SMOTE, SMOTEN, SMOTENC
 from imblearn.under_sampling import ClusterCentroids
 
+import os
+import sys
+
+ROOT_PATH: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_PATH not in sys.path:
+    sys.path.append(ROOT_PATH)
+
 from simpml.core.base import Dataset, PredictionType
 from simpml.core.data_set import DataSet
 from simpml.tabular.adapters_pool import ManipulateAdapter

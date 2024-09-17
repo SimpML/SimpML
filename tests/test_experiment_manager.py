@@ -14,17 +14,16 @@ if ROOT_PATH not in sys.path:
     sys.path.append(ROOT_PATH)
 
 from simpml.core.base import MetricName, PredictionType
+from simpml.core.data_set import DataSet
 from simpml.core.experiment_manager import ExperimentManager
 from simpml.tabular.tabular_data_manager import SupervisedTabularDataManager
 from simpml.vision.data import VisionDataManager
 from fastai.vision.all import ImageDataLoaders, untar_data, URLs, get_image_files, Resize
 
-TEST_DATA_DIR: str = os.path.join(ROOT_PATH, "tests", "data")
-
 def test_best_opt_metric() -> None:
     """Test finding the best optimization metric."""
     data_manager = SupervisedTabularDataManager(
-        os.path.join(TEST_DATA_DIR, "train_titanic.csv"),
+        DataSet.load_titanic_dataset(),
         target="Survived",
         prediction_type=PredictionType.BinaryClassification,
     )

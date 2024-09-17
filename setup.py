@@ -1,10 +1,11 @@
-"""
-Setup module for SimpML.
+"""Setup module for SimpML.
 """
 
 import os
 from typing import List  # Typing import should come before third-party imports
+
 from setuptools import find_packages, setup  # Reordered imports as per linter
+
 
 # Helper function to read requirements from a file
 def parse_requirements(filename: str) -> List[str]:

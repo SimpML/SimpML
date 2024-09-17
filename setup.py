@@ -1,12 +1,14 @@
+"""
+Setup module for SimpML.
+"""
+
 import os
 from typing import List  # Typing import should come before third-party imports
-
-from setuptools import setup, find_packages  # Third-party imports
+from setuptools import find_packages, setup  # Reordered imports as per linter
 
 # Helper function to read requirements from a file
 def parse_requirements(filename: str) -> List[str]:
-    """
-    Parse a requirements file into a list of dependencies.
+    """Parse a requirements file into a list of dependencies.
 
     Args:
         filename (str): The path to the requirements file.
@@ -20,6 +22,7 @@ def parse_requirements(filename: str) -> List[str]:
             for line in file
             if line.strip() and not line.startswith('#')
         ]
+
 
 # Read main dependencies and dev dependencies
 install_requires: List[str] = parse_requirements('requirements.txt')
@@ -43,7 +46,7 @@ setup(
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
-        "License :: Other/Proprietary License",
+        "License :: OSI Approved :: MIT License",  # Updated license classifier
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",

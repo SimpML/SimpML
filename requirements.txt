@@ -34,4 +34,3 @@ tsfresh>=0.20.1
 typing_extensions>=4.7.1
 xgboost>=1.7.6
 xlrd>=2.0.1
-ydata-profiling>=4.3.2

@@ -32,6 +32,7 @@ def test_noisy_features() -> None:
         exp_manager.opt_metric,
     )
     assert len(interp.get_noisy_features()) > -1
+    interp.plot_confusion_matrix() 
 
 
 def test_no_shap() -> None:

@@ -15,6 +15,7 @@ lightgbm>=4.0.0
 matplotlib>=3.7.2
 methodtools>=0.4.7
 mlflow>=2.5.0
+nbformat>=4.2.0
 numpy>=1.23.5
 opencv-python>=4.8.0.74
 openpyxl>=3.1.2

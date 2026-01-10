@@ -23,19 +23,7 @@ from simpml.vision.base import FastaiModelManagerBase
 
 
 class FastaiModelClassificationManager(FastaiModelManagerBase):
-    """Model for presentation in the table.
-
-    Input:
-        model (model-type): model with hyper-parameters
-        name (str): name of the model-view
-        desc (str): Description of the model
-        random_state (int): random state
-        prediction_type (str): The type of models trained
-        opt_metric (MetricWrapper): the metric you want to optimized
-
-    Attributes:
-        fit(X_train, y_train)
-    """
+    """Model manager for FastAI vision classification models."""
 
     def __init__(self, arch: Any, name: str, desc: str) -> None:
         """Initializes the FastaiModelClassificationManager class.
@@ -50,28 +38,21 @@ class FastaiModelClassificationManager(FastaiModelManagerBase):
         self.desc: str = desc
         self.model: Optional[Learner] = None
         self.dls: Optional[DataLoaders] = None
+        self.batch_size: int = 32
+
+    def set_batch_size(self, batch_size: int) -> None:
+        """Set the batch size for predictions."""
+        if batch_size < 1:
+            raise ValueError("Batch size must be at least 1")
+        self.batch_size = batch_size
 
     def __repr__(self) -> str:
-        """Represent object instance as string.
-
-        Returns:
-            String representation.
-        """
         if self.model is not None:
             return f"Model: {self.model}, Description: {self.desc}"
         return f"Model: {self.name}, Description: {self.desc}"
 
     def fit(self, data: DataLoaders, num_epocs: int = 5, **kwargs: Any) -> Self:
-        """Fit the model.
-
-        Args:
-            data: The training data.
-            num_epocs: The number of epocs to train.
-            **kwargs: For compatibility with the base class.
-
-        Returns:
-            This class instance.
-        """
+        """Fit the model."""
         if kwargs:
             raise RuntimeError(f"Unrecognized kwargs: {kwargs}")
         self.dls = data
@@ -79,24 +60,66 @@ class FastaiModelClassificationManager(FastaiModelManagerBase):
         self.model.fine_tune(num_epocs)
         return self
 
-    def get_preds(self, X: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def get_preds(self, X: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """Use the model to make a prediction (detailed results).
 
         Args:
             X: The feature data.
 
         Returns:
-            The prediction results as a 4-tuple of Numpy arrays.
-            - (0): Input
-            - (1): Probabilities
-            - (2): Label
-            - (3): Predictions
+            A tuple containing:
+            - probabilities: The prediction probabilities
+            - predictions: The predicted classes
         """
-        assert self.dls is not None
-        assert self.model is not None
+        assert self.dls is not None, "Model hasn't been fitted yet. Call fit() first."
+        assert self.model is not None, "Model hasn't been fitted yet. Call fit() first."
 
         dl = self.dls.test_dl(X)
-        return self.model.get_preds(dl=dl, with_decoded=True, with_input=True)
+        preds = self.model.get_preds(dl=dl)
+        probs = preds[0].cpu().numpy()
+        pred_class = probs.argmax(axis=1)
+        
+        return probs, pred_class
+
+    def get_preds_batched(self, X: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """Use the model to make predictions in batches.
+        
+        Args:
+            X: The feature data.
+            
+        Returns:
+            A tuple containing:
+            - probabilities: The prediction probabilities
+            - predictions: The predicted classes
+        """
+        assert self.dls is not None, "Model hasn't been fitted yet. Call fit() first."
+        assert self.model is not None, "Model hasn't been fitted yet. Call fit() first."
+
+        all_probs = []
+        
+        try:
+            # Process data in batches
+            for i in range(0, len(X), self.batch_size):
+                batch = X[i:i + self.batch_size]
+                dl = self.dls.test_dl(batch)
+                preds = self.model.get_preds(dl=dl)
+                probs = preds[0]
+                
+                # Move to CPU and convert to numpy
+                all_probs.append(probs.cpu().numpy())
+
+                # Optional: clear GPU cache if using CUDA
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+
+            # Concatenate results
+            final_probs = np.concatenate(all_probs)
+            final_preds = final_probs.argmax(axis=1)
+            
+            return final_probs, final_preds
+            
+        except Exception as e:
+            raise RuntimeError(f"Error during batch prediction: {str(e)}")
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         """Use the model to make a prediction.
@@ -107,10 +130,14 @@ class FastaiModelClassificationManager(FastaiModelManagerBase):
         Returns:
             The prediction results.
         """
-        inp, probs, label, pred = self.get_preds(X)
-        return np.array(pred)
+        if len(X) <= self.batch_size:
+            probs, preds = self.get_preds(X)
+        else:
+            probs, preds = self.get_preds_batched(X)
+        
+        return preds
 
-    def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
+    def predict_proba(self, X: Union[pd.DataFrame, np.ndarray]) -> np.ndarray:
         """Get the prediction probabilities.
 
         Args:
@@ -119,8 +146,12 @@ class FastaiModelClassificationManager(FastaiModelManagerBase):
         Returns:
             The prediction probabilities.
         """
-        inp, probs, label, pred = self.get_preds(X)
-        return np.array(probs)
+        if len(X) <= self.batch_size:
+            probs, preds = self.get_preds(X)
+        else:
+            probs, preds = self.get_preds_batched(X)
+            
+        return probs
 
     def export(
         self,
@@ -130,44 +161,34 @@ class FastaiModelClassificationManager(FastaiModelManagerBase):
         include_data: bool = True,
         **kwargs: Any,
     ) -> None:
-        """Export model.
-
-        Args:
-            path: String or PathLike of file path to export the model into.
-            pickle_module: Which module to use for pickle functionality.
-            pickle_protocol: Which protocol to use for pickle.
-            include_data: Whether to include the data with the model.
-            **kwargs: For compatibility with the base class.
-        """
+        """Export model."""
         if kwargs:
             raise RuntimeError(f"Unrecognized kwargs: {kwargs}")
+            
         if not include_data:
             if self.model is None:
                 raise RuntimeError("There is no model to export.")
             dls = self.model.dls
             self.model.dls = self.model.dls.new_empty()
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            torch.save(self, path, pickle_module=pickle_module, pickle_protocol=pickle_protocol)
-
-        if not include_data:
-            assert self.model is not None
-            self.model.dls = dls
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                torch.save(self, path, pickle_module=pickle_module, pickle_protocol=pickle_protocol)
+        finally:
+            if not include_data:
+                assert self.model is not None
+                self.model.dls = dls
 
     def clone(self) -> Self:
-        """Creates a copy of this class instance.
-
-        Returns:
-            A copy of this class instance.
-        """
-        # Instantiate a new object
+        """Creates a copy of this class instance."""
         cloned_object = self.__class__(self.arch, self.name, self.desc)
+        cloned_object.batch_size = self.batch_size
 
-        # Use the state_dict to clone the model
         if self.model:
             cloned_object.model = copy.deepcopy(self.model)
             cloned_object.model.load_state_dict(self.model.state_dict())
+            cloned_object.dls = self.dls
 
         return cloned_object
 

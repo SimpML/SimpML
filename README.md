@@ -1,5 +1,5 @@
 # SimpML
-SimpML is an open-source, no/low-code machine learning library in Python that simplifies and automates machine learning workflows. With SimpML, you can quickly build your desired machine learning pipeline with just a few lines of code, drastically reducing your time-to-model.
+SimpML is an open-source, no/low-code machine learning library in Python that simplifies and automates machine learning workflows. With SimpML, you can quickly build your desired machine learning pipeline with just a few lines of code, drastically reducing your time-to-model. 
 
 ## Features
 ### Preprocess

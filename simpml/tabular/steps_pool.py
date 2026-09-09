@@ -546,8 +546,17 @@ class Infinity2Nan(BaseSelector):
 class NanColumnDropper(BaseEstimator, TransformerMixin):
     """Drops columns that have a specified percentage of NaNs."""
 
-    def __init__(self) -> None:
-        """Initializes the NanColumnDropper class."""
+    def __init__(self, threshold: float = 1.0) -> None:
+        """Initializes the NanColumnDropper class.
+
+        Args:
+            threshold: The minimum fraction of NaN values (between 0 and 1) a column
+                must have to be dropped. Defaults to 1.0, which drops only columns
+                that are entirely NaN (the previous, fixed behavior).
+        """
+        if not 0 <= threshold <= 1:
+            raise ValueError("threshold must be between 0 and 1")
+        self.threshold = threshold
         self.columns_to_drop_: Optional[Sequence[str]] = None
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None) -> NanColumnDropper:
@@ -564,8 +573,8 @@ class NanColumnDropper(BaseEstimator, TransformerMixin):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X must be a pandas DataFrame")
 
-        # Find columns with all NaN values
-        self.columns_to_drop_ = X.columns[X.isnull().all()]
+        # Find columns with a NaN fraction at or above the threshold
+        self.columns_to_drop_ = X.columns[X.isnull().mean() >= self.threshold]
 
         return self
 

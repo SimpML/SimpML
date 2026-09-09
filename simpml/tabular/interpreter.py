@@ -1050,7 +1050,10 @@ class TabularInterpreterClassification(TabularInterpreterBase):
 
     @default_data_fill
     def plot_confusion_matrix_main_fig(
-        self, X: Optional[pd.DataFrame] = None, y: Optional[pd.Series] = None
+        self,
+        X: Optional[pd.DataFrame] = None,
+        y: Optional[pd.Series] = None,
+        class_labels: Optional[Dict[int, str]] = None
     ) -> go.Figure:
         """Generates and plots a confusion matrix on the given data, in the graph objects format
         for the main fig.
@@ -1058,6 +1061,7 @@ class TabularInterpreterClassification(TabularInterpreterBase):
         Args:
             X: Input Dataset.
             y: Input target.
+            class_labels: Dict structure mapping the class integers to their corresponding string.
 
         Returns:
             The plotly figure containing the confusion matrix plot.
@@ -1065,12 +1069,14 @@ class TabularInterpreterClassification(TabularInterpreterBase):
         assert X is not None
         assert y is not None
 
-        z = metrics.confusion_matrix(y, self.model.predict(X))
-        z_prop = ((metrics.confusion_matrix(y, self.model.predict(X)) / len(y)) * 100).astype(int)[
-            ::-1
-        ]
-        cm_x = [str(x) for x in sorted(np.unique(y))]
-        cm_y = cm_x.copy()
+        z = metrics.confusion_matrix(y, self.model.predict(X))[::-1]
+        z_prop = ((metrics.confusion_matrix(y, self.model.predict(X))[::-1]
+                   / len(y)) * 100).astype(int)
+        if class_labels is None:
+            cm_x = [str(x) for x in sorted(np.unique(y))]
+        else:
+            cm_x = [class_labels.get(x, str(x)) for x in sorted(np.unique(y))]
+        cm_y = cm_x.copy()[::-1]
         z_text = [[str(y) for y in x] for x in z]
         z_prop_text = [[f"{str(y)}%" for y in x] for x in z_prop]
         final_z = [[x + "(" + y + ")" for x, y in zip(X, Y)] for X, Y in zip(z_text, z_prop_text)]
@@ -1556,6 +1562,7 @@ class TabularInterpreterBinaryClassification(TabularInterpreterClassification):
         X: Optional[pd.DataFrame] = None,
         y: Optional[pd.Series] = None,
         size: Optional[Sequence[int]] = None,
+        class_labels: Optional[Dict[int, str]] = None
     ) -> go.Figure:
         """Generates and plots a confusion matrix on the given data.
 
@@ -1563,6 +1570,7 @@ class TabularInterpreterBinaryClassification(TabularInterpreterClassification):
             X: Input Dataset.
             y: Input target.
             size: Tuple of width, height of the plot. None for auto-sizing.
+            class_labels: Dict structure mapping the class integers to their corresponding string.
 
         Returns:
             The plotly figure containing the confusion matrix plot
@@ -1571,11 +1579,13 @@ class TabularInterpreterBinaryClassification(TabularInterpreterClassification):
         assert y is not None
 
         z = metrics.confusion_matrix(y, self.model.predict(X))[::-1]
-        z_prop = ((metrics.confusion_matrix(y, self.model.predict(X)) / len(y)) * 100).astype(int)[
-            ::-1
-        ]
-        cm_x = [str(x) for x in sorted(np.unique(y))]
-        cm_y = cm_x.copy()
+        z_prop = ((metrics.confusion_matrix(y, self.model.predict(X))[::-1]
+                   / len(y)) * 100).astype(int)
+        if class_labels is None:
+            cm_x = [str(x) for x in sorted(np.unique(y))]
+        else:
+            cm_x = [class_labels.get(x, str(x)) for x in sorted(np.unique(y))]
+        cm_y = cm_x.copy()[::-1]
         z_text = [[str(y) for y in x] for x in z]
         z_prop_text = [[f"{str(y)}%" for y in x] for x in z_prop]
         final_z = [[x + "(" + y + ")" for x, y in zip(X, Y)] for X, Y in zip(z_text, z_prop_text)]
@@ -1831,6 +1841,7 @@ class TabularInterpreterBinaryClassification(TabularInterpreterClassification):
         n_feats: int = 10,
         force_shap: bool = False,
         size: Optional[Tuple[int, int]] = (900, 800),
+        class_labels: Optional[Dict[int, str]] = None
     ) -> go.Figure:
         """Prepares and displays the main interpreter figure for the binary classification case.
 
@@ -1853,6 +1864,7 @@ class TabularInterpreterBinaryClassification(TabularInterpreterClassification):
             force_shap: bool for whether to force shap based feature importance for models with
                 slow SHAP runtimes.
             size: Tuple of width, height of the plot. None for auto-sizing.
+            class_labels: Dict structure mapping the class integers to their corresponding string.
 
         Returns:
             A plotly figure containing the final plot
@@ -1899,7 +1911,10 @@ class TabularInterpreterBinaryClassification(TabularInterpreterClassification):
             z_prop = (
                 (metrics.confusion_matrix(y, pred_proba > thresh)[::-1] / len(y)) * 100
             ).astype(int)
-            cm_x = [str(x) for x in sorted(np.unique(y))]
+            if class_labels is None:
+                cm_x = [str(x) for x in sorted(np.unique(y))]
+            else:
+                cm_x = [class_labels.get(x, str(x)) for x in sorted(np.unique(y))]
             cm_y = cm_x.copy()[::-1]
             z_text = [[str(y) for y in x] for x in z]
             z_prop_text = [[f"{str(y)}%" for y in x] for x in z_prop]
